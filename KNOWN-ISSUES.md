@@ -1,20 +1,32 @@
-# Known Issues — `v1.0.0` baseline
+# Known Issues
 
-> These are **documented, not fixed.** The `v1.0.0` baseline reproduces production behaviour exactly.
-> Fixes are scheduled for `1.0.x` and later. Full analysis and evidence live in the ZATCA audit
-> report ("تشريح الـ PAC").
+> The `v1.0.0`/`v1.0.1` baseline reproduced production behaviour exactly (bugs documented, not fixed).
+> Faithful bug fixes land in the `1.0.x` line — see **Fixed in `v1.0.2`** below. Remaining items are
+> still documented, not fixed. Full analysis and evidence live in the ZATCA audit report
+> ("تشريح الـ PAC").
 
-## Confirmed by ZATCA in production (rejections on the simplified/B2C path)
+## Fixed in `v1.0.2` (simplified/B2C clearance)
 
-These four fire together on invoices built through the local B2C service path; ZATCA's validator
-returned them on real rejected documents.
+Three of the four ZATCA rejections were fixed in `v1.0.2`, verified offline against a ZATCA-accurate
+hash recomputation on real production invoices (embedded hash == ZATCA's own strip-ext/sig/QR → C14N
+→ SHA-256; QR TLV, signature, and timestamp checked). **Verify on the ZATCA sandbox before relying on
+them in production.**
+
+| ZATCA code | Fix |
+|---|---|
+| `XML-INVOICE-ERROR` | `src/InvoiceType.php` — the `'simplified'` arm now maps to `SIMPLIFIED_INVOICE` (`0200000`) instead of `STANDARD_INVOICE` (`0100000`). This also makes the QR include the mandatory certificate-signature tag for simplified invoices. |
+| `invoiceHash_QRCODE_INVALID` | `src/InvoiceSigner.php` — after assembly the hash is recomputed exactly as ZATCA does (strip `UBLExtensions`/`Signature`/`QR` → C14N → SHA-256); if whitespace introduced while inserting those elements changed it, the QR + signature are rebuilt once with that authoritative hash. Invoices whose hash was already consistent (the previously-cleared documents) are left unchanged. |
+| `invoiceTimeStamp_QRCODE_INVALID` | `src/Helpers/InvoiceExtension.php` — the QR timestamp now mirrors `cbc:IssueTime` verbatim instead of force-appending a `Z` the XML lacks (KSA-25). |
+
+## Confirmed by ZATCA in production — still open
 
 | ZATCA code | Description | Location |
 |---|---|---|
-| `XML-INVOICE-ERROR` | "XML submitted using reporting API is not a simplified document" — simplified invoices are stamped with the standard subtype `0100000`. | `src/InvoiceType.php` (`'simplified'` arm → `STANDARD_INVOICE`) |
-| `invoiceHash_QRCODE_INVALID` | Invoice XML hash ≠ QR hash — whitespace injected after the hash is computed. | `src/InvoiceSigner.php` (`PHP_EOL . "    "` in the post-hash splice) |
-| `invoiceTimeStamp_QRCODE_INVALID` | QR timestamp ≠ invoice IssueTime — XML `IssueTime` lacks the trailing `Z` that the QR adds. | `src/Invoice.php` (`IssueTime` format) |
 | `BR-CO-*` tax rounding | VAT amount ≠ taxable × rate rounded to 2 dp — invoice-level `TaxAmount` written with 1 decimal. | `src/Invoice.php` (`number_format(..., 1, ...)`) |
+
+> **Not** fixed in `v1.0.2`: this touches monetary formatting across several fields, needs its own
+> review + sandbox verification, and did **not** fire in the 2026-09-06 rejection that prompted the
+> other three fixes.
 
 ## Other documented defects
 

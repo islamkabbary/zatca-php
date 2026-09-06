@@ -3,6 +3,28 @@
 All notable changes to `silavisions/zatca-php` are documented here. This project adheres to
 [Semantic Versioning](https://semver.org) from its own baseline (see below).
 
+## [1.0.2] — ZATCA simplified/B2C clearance fixes
+
+Faithful bug fixes for three ZATCA rejections that blocked reporting of simplified (B2C) invoices.
+Verified offline against a ZATCA-accurate hash recomputation on real production invoices; **must be
+confirmed on the ZATCA sandbox before production use.** Backward-compatible: no public API change.
+
+- **`XML-INVOICE-ERROR` ("not a simplified document")** — `src/InvoiceType.php`: the `simplified`
+  category now emits `SIMPLIFIED_INVOICE` (`0200000`) instead of `STANDARD_INVOICE` (`0100000`).
+  As a result the QR now also carries the mandatory certificate-signature tag for simplified invoices.
+- **`invoiceHash_QRCODE_INVALID`** — `src/InvoiceSigner.php`: the invoice hash is now reconciled with
+  what ZATCA recomputes from the submitted document. After assembly the hash is recomputed the ZATCA
+  way (strip `UBLExtensions`/`Signature`/`QR` → C14N → SHA-256); if whitespace introduced while
+  inserting those elements changed it, the QR and signature are rebuilt once with that authoritative
+  hash. Documents whose hash was already consistent are left byte-stable (retained content and hash
+  unchanged), so previously-cleared invoices are unaffected.
+- **`invoiceTimeStamp_QRCODE_INVALID` (KSA-25 warning)** — `src/Helpers/InvoiceExtension.php`: the QR
+  timestamp now mirrors `cbc:IssueTime` verbatim instead of force-appending a trailing `Z` the XML
+  did not contain.
+
+No change to runtime dependencies, autoload, namespace, or public API. The `BR-CO-*` tax-rounding
+issue remains open (see `KNOWN-ISSUES.md`).
+
 ## [1.0.1] — Packaging / metadata correction only
 
 No changes to ZATCA runtime source (`src/`) or behaviour — this release only corrects the package
@@ -33,5 +55,6 @@ production (based on upstream `saleh7/php-zatca-xml` v2.2 + `Mappers/` backport 
 Known defects are documented in [`KNOWN-ISSUES.md`](KNOWN-ISSUES.md) and are deliberately left
 unfixed in this baseline. Fixes will land in `1.0.x`.
 
+[1.0.2]: https://github.com/islamkabbary/zatca-php/releases/tag/v1.0.2
 [1.0.1]: https://github.com/islamkabbary/zatca-php/releases/tag/v1.0.1
 [1.0.0]: https://github.com/islamkabbary/zatca-php/releases/tag/v1.0.0
