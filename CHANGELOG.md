@@ -1,7 +1,18 @@
 # Changelog
 
-All notable changes to `silavisions/zatca` are documented here. This project adheres to
+All notable changes to `silavisions/zatca-php` are documented here. This project adheres to
 [Semantic Versioning](https://semver.org) from its own baseline (see below).
+
+## [1.0.1] — Packaging / metadata correction only
+
+No changes to ZATCA runtime source (`src/`) or behaviour — this release only corrects the package
+identity and documentation now that the repository is public.
+
+- Renamed Composer package from `silavisions/zatca` to `silavisions/zatca-php`.
+- Updated repository, homepage and support links to `https://github.com/islamkabbary/zatca-php`.
+- Updated installation documentation for the public GitHub repository (VCS-repository install over
+  HTTPS; no SSH/Deploy Key required).
+- No changes to ZATCA runtime source or behaviour; `src/` remains byte-identical to `v1.0.0`.
 
 ## [1.0.0] — Production baseline
 
@@ -22,4 +33,5 @@ production (based on upstream `saleh7/php-zatca-xml` v2.2 + `Mappers/` backport 
 Known defects are documented in [`KNOWN-ISSUES.md`](KNOWN-ISSUES.md) and are deliberately left
 unfixed in this baseline. Fixes will land in `1.0.x`.
 
-[1.0.0]: https://github.com/silavisions/zatca/releases/tag/v1.0.0
+[1.0.1]: https://github.com/islamkabbary/zatca-php/releases/tag/v1.0.1
+[1.0.0]: https://github.com/islamkabbary/zatca-php/releases/tag/v1.0.0

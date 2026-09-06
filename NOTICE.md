@@ -1,6 +1,6 @@
 # NOTICE
 
-`silavisions/zatca` is a derivative work of
+`silavisions/zatca-php` is a derivative work of
 [**saleh7/php-zatca-xml**](https://github.com/Saleh7/php-zatca-xml) (MIT License,
 Copyright © 2023 ~/Saleh).
 
@@ -10,7 +10,7 @@ Copyright © 2023 ~/Saleh).
 
 The original MIT license and copyright notice are retained in [`LICENSE`](LICENSE). This package
 keeps the original PHP namespace `Saleh7\Zatca\` for backward compatibility with existing consumers;
-the Composer package name is `silavisions/zatca`.
+the Composer package name is `silavisions/zatca-php`.
 
 Known behavioural differences from upstream and known defects are catalogued in
 [`KNOWN-ISSUES.md`](KNOWN-ISSUES.md) and are intentionally **not** altered in the `v1.0.0` baseline
