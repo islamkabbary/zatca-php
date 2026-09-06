@@ -1,0 +1,25 @@
+# dependencies & lock (library: lock is not committed)
+/vendor/
+composer.lock
+composer.phar
+
+# secrets & generated crypto material — NEVER commit
+*.pem
+*.csr
+*.key
+*.p12
+*.pfx
+examples/output/*
+!examples/output/.gitkeep
+
+# test / tooling caches
+.phpunit.result.cache
+/tests/*.xml
+/.php-cs-fixer.cache
+
+# editor / OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db

@@ -1,0 +1,15 @@
+# Preserve EXACT source bytes — v1.0.0 must be byte-identical to the production baseline.
+# (Source line endings do not affect ZATCA runtime output, which is governed by PHP_EOL/C14N.
+#  A future release may normalize to LF; the baseline deliberately does not.)
+* -text
+
+# Keep the Composer dist tarball lean (these are not needed at runtime)
+/tests           export-ignore
+/examples        export-ignore
+/.github         export-ignore
+/phpunit.xml.dist export-ignore
+/.gitattributes  export-ignore
+/.gitignore      export-ignore
+/CHANGELOG.md    export-ignore
+/KNOWN-ISSUES.md export-ignore
+/example.php     export-ignore
